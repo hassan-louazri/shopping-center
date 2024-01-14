@@ -1,1 +1,7 @@
 .token
+
+store-backend/target
+store-backend/*.class
+store-backend/.mvn
+store-backend/.vscode
+store-backend/application.properties
