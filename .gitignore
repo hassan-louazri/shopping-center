@@ -5,3 +5,5 @@ store-backend/*.class
 store-backend/.mvn
 store-backend/.vscode
 store-backend/application.properties
+store-backend/mvnw
+store-backend/mvnw.cmd
