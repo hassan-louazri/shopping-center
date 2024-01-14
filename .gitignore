@@ -7,3 +7,13 @@ store-backend/.vscode
 store-backend/application.properties
 store-backend/mvnw
 store-backend/mvnw.cmd
+
+store-frontend/dist
+store-frontend/tmp
+store-frontend/node-modules
+store-frontend/*.js
+store-frontend/*.js.map
+store-frontend/*.ts
+store-frontend/*.spec.ts
+store-frontend/.vscode
+store-frontend/.angular
