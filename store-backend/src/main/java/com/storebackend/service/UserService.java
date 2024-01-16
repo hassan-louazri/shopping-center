@@ -1,7 +1,7 @@
 package com.storebackend.service;
 
-import com.storebackend.Models.UserDTO;
 import com.storebackend.entities.User;
+import com.storebackend.models.UserDTO;
 import com.storebackend.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

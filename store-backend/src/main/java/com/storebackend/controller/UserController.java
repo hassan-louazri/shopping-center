@@ -1,7 +1,7 @@
 package com.storebackend.controller;
 
-import com.storebackend.Models.UserDTO;
 import com.storebackend.entities.User;
+import com.storebackend.models.UserDTO;
 import com.storebackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

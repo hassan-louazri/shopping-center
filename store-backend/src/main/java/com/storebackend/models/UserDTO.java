@@ -1,4 +1,4 @@
-package com.storebackend.Models;
+package com.storebackend.models;
 import lombok.Data;
 @Data
 public class UserDTO {
