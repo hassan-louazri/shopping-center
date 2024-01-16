@@ -1,5 +1,6 @@
 package com.storebackend.controller;
 
+import com.storebackend.entities.Order;
 import com.storebackend.entities.User;
 import com.storebackend.models.UserDTO;
 import com.storebackend.service.UserService;
@@ -34,9 +35,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}/orders")
-    public ResponseEntity<String> getUserOrders(@PathVariable String id) {
-        // a faire apres
-        return ResponseEntity.ok("User orders for user with id " + id);
+    public ResponseEntity<List<Order>> getUserOrders(@PathVariable String id) {
+        List<Order> userOrders = userService.getUserOrders(id);
+        return ResponseEntity.ok(userOrders);
     }
 
     @PutMapping("/{id}")

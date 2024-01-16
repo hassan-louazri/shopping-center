@@ -1,5 +1,6 @@
 package com.storebackend.models;
 import lombok.Data;
+
 @Data
 public class UserDTO {
     private String name;
@@ -8,5 +9,4 @@ public class UserDTO {
     private String phone;
     private String country;
     private String address;
-
 }

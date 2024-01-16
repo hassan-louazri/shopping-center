@@ -1,24 +1,29 @@
 package com.storebackend.service;
 
+import com.storebackend.entities.Order;
 import com.storebackend.entities.User;
 import com.storebackend.models.UserDTO;
+import com.storebackend.repository.OrderRepository;
 import com.storebackend.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
     @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, OrderRepository orderRepository) {
         this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
     }
 
     public User createUser(UserDTO userDTO) {
@@ -45,5 +50,16 @@ public class UserService {
 
     public void deleteUser(String id) {
         userRepository.deleteById(id);
+    }
+
+    public List<Order> getUserOrders(String userId) {
+        List<Order> allOrders = orderRepository.findAll();
+        List<Order> userOrders = new ArrayList<Order>();
+
+        for(Order order: allOrders) {
+            if(order.getUser().getId() == userId) userOrders.add(order);
+        }
+
+        return userOrders;
     }
 }

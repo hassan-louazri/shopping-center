@@ -12,7 +12,9 @@ public class Product {
     private String name;
     private Double price;
     private String image;
+    private Integer quantity;
 
+    
     public Product() {}
 
     public Product(String name, Double price, String image) {
@@ -20,7 +22,7 @@ public class Product {
         this.price = price;
         this.image = image;
     }
-
+    
     public String getId() {
         return id;
     }
@@ -36,7 +38,7 @@ public class Product {
     public void setName(String name) {
         this.name = name;
     }
-
+    
     public Double getPrice() {
         return this.price;
     }
@@ -44,12 +46,20 @@ public class Product {
     public void setPrice(Double price) {
         this.price = price;
     }
-
+    
     public String getImage() {
         return this.image;
     }
-
+    
     public void setImage(String imgLink) {
         this.image = imgLink;
+    }
+    
+    public Integer getQuantity() {
+        return quantity;
+    }
+    
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 }
