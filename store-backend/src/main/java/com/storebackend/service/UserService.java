@@ -5,6 +5,7 @@ import com.storebackend.entities.User;
 import com.storebackend.models.UserDTO;
 import com.storebackend.repository.OrderRepository;
 import com.storebackend.repository.UserRepository;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 @Service
 public class UserService {
@@ -27,8 +30,9 @@ public class UserService {
     }
 
     public User createUser(UserDTO userDTO) {
-        // TODO: check user info before saving
-
+        // check user info
+        if(!userValidator(userDTO)) return new User();
+        
         User user = modelMapper.map(userDTO, User.class);
         return userRepository.save(user);
     }
@@ -42,13 +46,17 @@ public class UserService {
     }
 
     public void updateUser(String id, UserDTO userDTO) {
-        // TODO: check user info before updating
 
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             modelMapper.map(userDTO, user);
-            userRepository.save(user);
+            //check user info before updating
+            if(userValidator(userDTO)){
+                userRepository.save(user);
+            } else {
+                return;
+            }
         }
     }
 
@@ -65,5 +73,33 @@ public class UserService {
             if(order.getUser() != null && order.getUser().equals(userId)) userOrders.add(order);
         }
         return userOrders;
+    }
+
+    private boolean userValidator(UserDTO userDTO) {
+        return validateEmail(userDTO.getMail()) && validatePhone(userDTO.getPhone()) && validateCountry(userDTO.getCountry());
+    }
+
+    private boolean validateEmail(String mail) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(mail);
+        return matcher.matches();
+    }
+
+    private boolean validatePhone(String phone) {
+        String phoneRegex = "^(\\\\+\\\\d{1,3}[- ]?)?\\\\d{10}$";
+        Pattern pattern = Pattern.compile(phoneRegex);
+        Matcher matcher = pattern.matcher(phone);
+        return matcher.matches();
+    }
+
+    private boolean validateCountry(String country) {
+        //TODO: change
+        String[] availableCountries = {"Morocco", "France", "USA", "UK"};
+        for(String availableCountry : availableCountries) {
+            if(country.equalsIgnoreCase(availableCountry)) return true;
+        }
+
+        return false;
     }
 }

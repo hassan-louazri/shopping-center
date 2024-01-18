@@ -32,7 +32,8 @@ public class ProductService {
     }
 
     public Product addProduct(Product product) {
-        // TODO: check product info before saving
+        // check product info before saving
+        if(product.getPrice() <= 0 || product.getQuantity() <= 0) return new Product();
 
         return productRepository.save(product);
     }
@@ -42,7 +43,8 @@ public class ProductService {
     }
 
     public void updateProduct(String id, ProductDTO product) {
-        // TODO: check product info before updating 
+        // check product info
+        if(product.getPrice() <= 0 || product.getQuantity() <= 0) return;
 
         Product productToUpdate = productRepository.findById(id).orElse(null);
 
