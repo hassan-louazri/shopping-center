@@ -3,7 +3,6 @@ package com.storebackend.entities;
 import java.util.HashMap;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "orders")
@@ -12,24 +11,32 @@ public class Order {
     @Id
     private String id;
 
-    @DBRef
-    private User user;
     
+    private String user;
     private HashMap<String, Integer> products;
     private Double subtotal;
     private Double shippingCost;
     
     public Order() {}
     
-    public Order(HashMap<String, Integer> products, Double subtotal, Double shippingCost) {
+    public Order(String user, HashMap<String, Integer> products, Double subtotal, Double shippingCost) {
+        this.user = user;
         this.products = products;
         this.subtotal = subtotal;
         this.shippingCost = shippingCost;
     }
     
-    public User getUser() {
+    public String getId() {
+        return this.id;
+    }
+
+    public String getUser() {
         return user;
     }
+
+    public void setUser(String userId) {
+
+    } 
 
     public HashMap<String, Integer> getProducts() {
         return products;

@@ -27,6 +27,8 @@ public class UserService {
     }
 
     public User createUser(UserDTO userDTO) {
+        // TODO: check user info before saving
+
         User user = modelMapper.map(userDTO, User.class);
         return userRepository.save(user);
     }
@@ -40,6 +42,8 @@ public class UserService {
     }
 
     public void updateUser(String id, UserDTO userDTO) {
+        // TODO: check user info before updating
+
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -53,13 +57,13 @@ public class UserService {
     }
 
     public List<Order> getUserOrders(String userId) {
+        
         List<Order> allOrders = orderRepository.findAll();
         List<Order> userOrders = new ArrayList<Order>();
 
         for(Order order: allOrders) {
-            if(order.getUser().getId() == userId) userOrders.add(order);
+            if(order.getUser() != null && order.getUser().equals(userId)) userOrders.add(order);
         }
-
         return userOrders;
     }
 }

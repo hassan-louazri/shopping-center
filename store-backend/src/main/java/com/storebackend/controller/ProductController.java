@@ -48,6 +48,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        //TODO: return response based on service response
         Product newProduct = productService.addProduct(product);
 
         return ResponseEntity.ok(newProduct);
@@ -55,13 +56,15 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable String id, @RequestBody ProductDTO product) {
+        //TODO: custom exception
+
         try {
-        productService.updateProduct(id, product);
-    } catch (Exception e) {
-        System.out.println("Error in update product");
-    }
-    
-    return ResponseEntity.noContent().build();    
+            productService.updateProduct(id, product);
+        } catch (Exception e) {
+            System.out.println("Error in update product" + e);
+        }
+        
+        return ResponseEntity.noContent().build();    
     }
 
     @DeleteMapping("/{id}")

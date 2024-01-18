@@ -32,6 +32,8 @@ public class ProductService {
     }
 
     public Product addProduct(Product product) {
+        // TODO: check product info before saving
+
         return productRepository.save(product);
     }
 
@@ -40,6 +42,8 @@ public class ProductService {
     }
 
     public void updateProduct(String id, ProductDTO product) {
+        // TODO: check product info before updating 
+
         Product productToUpdate = productRepository.findById(id).orElse(null);
 
         if(productToUpdate != null) {

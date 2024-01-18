@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.storebackend.entities.Order;
+import com.storebackend.models.OrderDTO;
 import com.storebackend.service.OrderService;
 
 @RestController
@@ -32,8 +33,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> newOrder(@RequestBody Order order) {
-        Order newOrder = orderService.newOrder(order);
+    public ResponseEntity<Order> newOrder(@RequestBody OrderDTO orderDTO) {
+        Order newOrder = orderService.newOrder(orderDTO);
 
         return ResponseEntity.ok(newOrder);
     }

@@ -24,6 +24,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody UserDTO userDTO) {
+        // TODO: return response based on userService response
         User newUser = userService.createUser(userDTO);
         return ResponseEntity.ok(newUser);
     }
@@ -42,6 +43,8 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateUser(@PathVariable String id, @RequestBody UserDTO userDTO) {
+        //TODO: return response based on userService response
+        
         userService.updateUser(id, userDTO);
         return ResponseEntity.noContent().build();
     }
