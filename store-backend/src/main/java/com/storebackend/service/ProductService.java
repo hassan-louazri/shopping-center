@@ -33,9 +33,14 @@ public class ProductService {
     }
 
     public Product addProduct(Product product) {
+        // check product exists
+        Product existingProduct = productRepository.findByName(product.getName()).orElse(null);
+        if(existingProduct != null) {
+            throw new BadRequestException("Invalid Request. Product already exists.");
+        }
         // check product info before saving
         if(product.getPrice() <= 0 || product.getQuantity() <= 0) {
-            throw new BadRequestException("Invalid Request, please check product structure (String, Double, String, Integer).");
+            throw new BadRequestException("Invalid Request, Please check price and/or quantity values.");
         }
 
         return productRepository.save(product);
@@ -47,13 +52,17 @@ public class ProductService {
 
     public void updateProduct(String id, ProductDTO product) {
         // check product info
-        if(product.getPrice() <= 0 || product.getQuantity() <= 0) return;
+        if(product.getPrice() <= 0 || product.getQuantity() <= 0) {
+            throw new BadRequestException("Invalid Request. Please check price and/or quantity values.");
+        }
 
         Product productToUpdate = productRepository.findById(id).orElse(null);
 
         if(productToUpdate != null) {
             modelMapper.map(product, productToUpdate);
             productRepository.save(productToUpdate);
+        } else {
+            throw new BadRequestException("Invalid Request. Product not found.");
         }
     }
 }
