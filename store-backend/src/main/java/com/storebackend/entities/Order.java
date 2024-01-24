@@ -5,7 +5,10 @@ import java.util.HashMap;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.AllArgsConstructor;
+
 @Document(collection = "orders")
+@AllArgsConstructor
 public class Order {
 
     @Id

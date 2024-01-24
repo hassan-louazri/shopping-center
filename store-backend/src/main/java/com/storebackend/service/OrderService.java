@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.storebackend.entities.Order;
 import com.storebackend.entities.Product;
+import com.storebackend.exceptions.BadRequestException;
 import com.storebackend.models.OrderDTO;
 import com.storebackend.repository.OrderRepository;
 import com.storebackend.repository.ProductRepository;
@@ -29,7 +30,9 @@ public class OrderService {
         HashMap<String, Integer> products = orderDTO.getProducts();
         products.forEach((product, quantity) -> {
             Product isAvailable = productRepository.findById(product).orElse(null);
-            if(isAvailable == null) return;
+            if(isAvailable == null) {
+                throw new BadRequestException(String.format("The product identified with %s cannot be added to order.", product));
+            }
         });
         
         
@@ -40,6 +43,10 @@ public class OrderService {
     }
 
     public Order getOrder(String id) {
-        return orderRepository.findById(id).orElse(null);
+        Order order = orderRepository.findById(id).orElse(null);
+        if(order == null) {
+            throw new BadRequestException("Invalid Request. Product not found.");
+        }
+        return order;
     }
 }

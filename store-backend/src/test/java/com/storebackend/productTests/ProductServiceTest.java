@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -56,8 +55,8 @@ public class ProductServiceTest {
             "http://linkimage.com",
             1
         );
+        given(productRepository.findById(productId)).willReturn(Optional.of(expectedProduct));
         // When
-        when(productRepository.findById(productId)).thenReturn(Optional.of(expectedProduct));
         Product actualProduct = productService.getProduct(productId);
         // Then
         assertThat(actualProduct).isNotNull();
@@ -68,8 +67,8 @@ public class ProductServiceTest {
     void getProductWhenDoesNotExist() {
         // Given
         String productId = "123productTestId!!!";
+        given(productRepository.findById(productId)).willReturn(Optional.empty());
         // When
-        when(productRepository.findById(productId)).thenReturn(Optional.empty());
         Product actualProduct = productService.getProduct(productId);
         // Then
         assertThat(actualProduct).isNull();
