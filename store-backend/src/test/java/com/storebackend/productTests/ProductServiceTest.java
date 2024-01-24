@@ -18,8 +18,6 @@ import com.storebackend.repository.ProductRepository;
 import com.storebackend.service.ProductService;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
@@ -53,21 +51,23 @@ public class ProductServiceTest {
             "http://linkimage.com",
             1
         );
-        when(productRepository.findById(productId)).thenReturn(Optional.of(expectedProduct));
         // When
+        when(productRepository.findById(productId)).thenReturn(Optional.of(expectedProduct));
         Product actualProduct = productService.getProduct(productId);
         // Then
-        assertNotNull(actualProduct);
+        assertThat(actualProduct).isNotNull();
         assertThat(actualProduct).isEqualTo(expectedProduct);
     }
 
     @Test
-    @Disabled
     void getProductWhenDoesNotExist() {
+        // Given
+        String productId = "123productTestId!!!";
         // When
-        
-
+        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+        Product actualProduct = productService.getProduct(productId);
         // Then
+        assertThat(actualProduct).isNull();
     }
 
     @Test
@@ -108,9 +108,13 @@ public class ProductServiceTest {
     }
 
     @Test
-    @Disabled
     void deleteProduct() {
-
+        // Given
+        String productId = "123productTestId!!!";
+        // When 
+        productService.deleteProduct(productId);
+        // Then
+        verify(productRepository).deleteById(productId);
     }
 
     @Test
