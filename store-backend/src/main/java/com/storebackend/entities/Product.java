@@ -3,6 +3,11 @@ package com.storebackend.entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "products") 
 public class Product {
 
@@ -13,9 +18,6 @@ public class Product {
     private Double price;
     private String image;
     private Integer quantity;
-
-    
-    public Product() {}
 
     public Product(String name, Double price, String image, Integer quantity) {
         this.name = name;

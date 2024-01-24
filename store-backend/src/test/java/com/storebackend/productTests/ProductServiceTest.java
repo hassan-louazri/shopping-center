@@ -1,6 +1,8 @@
 package com.storebackend.productTests;
 
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -12,12 +14,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.storebackend.entities.Product;
 import com.storebackend.exceptions.BadRequestException;
-import com.storebackend.models.ProductDTO;
 import com.storebackend.repository.ProductRepository;
 import com.storebackend.service.ProductService;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
@@ -41,9 +43,31 @@ public class ProductServiceTest {
     }
 
     @Test
-    @Disabled
-    void getProduct(String id) {
+    void getProductWhenExists() {
+        // Given
+        String productId = "123productTestId!!!";
+        Product expectedProduct = new Product(
+            productId,
+            "TestProduct",
+            999.0,
+            "http://linkimage.com",
+            1
+        );
+        when(productRepository.findById(productId)).thenReturn(Optional.of(expectedProduct));
+        // When
+        Product actualProduct = productService.getProduct(productId);
+        // Then
+        assertNotNull(actualProduct);
+        assertThat(actualProduct).isEqualTo(expectedProduct);
+    }
 
+    @Test
+    @Disabled
+    void getProductWhenDoesNotExist() {
+        // When
+        
+
+        // Then
     }
 
     @Test
@@ -85,13 +109,13 @@ public class ProductServiceTest {
 
     @Test
     @Disabled
-    void deleteProduct(String id) {
+    void deleteProduct() {
 
     }
 
     @Test
     @Disabled
-    void updateProduct(String id, ProductDTO product) {
+    void updateProduct() {
         
     }
 
