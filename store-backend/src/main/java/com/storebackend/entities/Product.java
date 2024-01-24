@@ -17,10 +17,11 @@ public class Product {
     
     public Product() {}
 
-    public Product(String name, Double price, String image) {
+    public Product(String name, Double price, String image, Integer quantity) {
         this.name = name;
         this.price = price;
         this.image = image;
+        this.quantity = quantity;
     }
     
     public String getId() {

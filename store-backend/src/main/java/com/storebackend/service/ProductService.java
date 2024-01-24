@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.storebackend.entities.Product;
+import com.storebackend.exceptions.BadRequestException;
 import com.storebackend.models.ProductDTO;
 import com.storebackend.repository.ProductRepository;
 
@@ -33,7 +34,9 @@ public class ProductService {
 
     public Product addProduct(Product product) {
         // check product info before saving
-        if(product.getPrice() <= 0 || product.getQuantity() <= 0) return new Product();
+        if(product.getPrice() <= 0 || product.getQuantity() <= 0) {
+            throw new BadRequestException("Invalid Request, please check product structure (String, Double, String, Integer).");
+        }
 
         return productRepository.save(product);
     }
