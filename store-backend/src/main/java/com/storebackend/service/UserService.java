@@ -2,6 +2,7 @@ package com.storebackend.service;
 
 import com.storebackend.entities.Order;
 import com.storebackend.entities.User;
+import com.storebackend.exceptions.BadRequestException;
 import com.storebackend.models.UserDTO;
 import com.storebackend.repository.OrderRepository;
 import com.storebackend.repository.UserRepository;
@@ -30,9 +31,17 @@ public class UserService {
     }
 
     public User createUser(UserDTO userDTO) {
-        // check user info
-        if(!userValidator(userDTO)) return new User();
-        
+        // check if user already exists
+        Optional<User> exists = userRepository.findByMail(userDTO.getMail());
+        if(exists.isPresent()) {
+            throw new BadRequestException("Invalid Request. User already exists.");
+        }
+
+        // check user info (email, phone, country)
+        if(!userValidator(userDTO)) {
+            throw new BadRequestException("Invalid Request. Please check user data.");
+        };
+
         User user = modelMapper.map(userDTO, User.class);
         return userRepository.save(user);
     }
