@@ -1,9 +1,11 @@
 package com.storebackend.models;
 import java.util.HashMap;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class OrderDTO {
     private String user;
     private HashMap<String, Integer> products;

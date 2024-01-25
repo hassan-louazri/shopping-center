@@ -5,6 +5,8 @@ import java.util.HashMap;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.storebackend.models.OrderDTO;
+
 import lombok.AllArgsConstructor;
 
 @Document(collection = "orders")
@@ -13,7 +15,6 @@ public class Order {
 
     @Id
     private String id;
-
     
     private String user;
     private HashMap<String, Integer> products;
@@ -29,6 +30,13 @@ public class Order {
         this.shippingCost = shippingCost;
     }
     
+    public Order(OrderDTO orderDTO) {
+        this.user = orderDTO.getUser();
+        this.products = orderDTO.getProducts();
+        this.subtotal = orderDTO.getSubtotal();
+        this.shippingCost = orderDTO.getShippingCost();
+    }
+
     public String getId() {
         return this.id;
     }

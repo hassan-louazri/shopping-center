@@ -32,18 +32,18 @@ public class ProductService {
         return productRepository.findById(id).orElse(null);
     }
 
-    public Product addProduct(Product product) {
-        // check product exists
-        Product existingProduct = productRepository.findByName(product.getName()).orElse(null);
+    public Product addProduct(ProductDTO productDTO) {
+        // check if product already exists
+        Product existingProduct = productRepository.findByName(productDTO.getName()).orElse(null);
         if(existingProduct != null) {
             throw new BadRequestException("Invalid Request. Product already exists.");
         }
         // check product info before saving
-        if(product.getPrice() <= 0 || product.getQuantity() <= 0) {
+        if(productDTO.getPrice() <= 0 || productDTO.getQuantity() <= 0) {
             throw new BadRequestException("Invalid Request, Please check price and/or quantity values.");
         }
-
-        return productRepository.save(product);
+        Product newProduct = new Product(productDTO);
+        return productRepository.save(newProduct);
     }
 
     public void deleteProduct(String id) {

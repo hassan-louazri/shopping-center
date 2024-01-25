@@ -3,6 +3,8 @@ package com.storebackend.entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.storebackend.models.ProductDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +26,13 @@ public class Product {
         this.price = price;
         this.image = image;
         this.quantity = quantity;
+    }
+
+    public Product(ProductDTO productDTO) {
+        this.name = productDTO.getName();
+        this.price = productDTO.getPrice();
+        this.image = productDTO.getImage();
+        this.quantity = productDTO.getQuantity();
     }
     
     public String getId() {

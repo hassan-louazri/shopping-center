@@ -26,8 +26,9 @@ public class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
-    private ProductService productService;
+    @Mock
     private ModelMapper mockMapper;
+    private ProductService productService;
 
     @BeforeEach
     void setUp() {
@@ -75,54 +76,62 @@ public class ProductServiceTest {
     }
 
     @Test
-    void addProduct() {
+    // @Disabled
+    void addProductWhenValidData() {
         // Given
-        Product product = new Product(
+        ProductDTO productDTO = new ProductDTO(
             "TestProduct",
             999.0,
             "http://linkimage.com",
             1
         );
-        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+        ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
         
+        given(productRepository.findByName("TestProduct")).willReturn(Optional.empty());
+        given(productRepository.save(productCaptor.capture())).willReturn(new Product(productDTO));
+
         // When
-        productService.addProduct(product);
+        Product addedProduct = productService.addProduct(productDTO);
+
         // Then
-        verify(productRepository).save(productArgumentCaptor.capture());
-
-        Product capturedProduct = productArgumentCaptor.getValue();
-
-        assertThat(capturedProduct).isEqualTo(product);
+        Product capturedProduct = productCaptor.getValue();
+        verify(productRepository).findByName("TestProduct");
+        verify(productRepository).save(any(Product.class));
+        
+        assertThat(addedProduct).isNotNull();
+        assertThat(addedProduct.getId()).isEqualTo(capturedProduct.getId());
     }
 
     @Test
     void addProductAlreadyExists() {
-        Product existingProduct = new Product(
+        ProductDTO existingProductDTO = new ProductDTO(
             "Test Product",
             366.0,
             "http://imageLink.com",
             1
         );
-        Product newProduct = new Product(
+        ProductDTO newProductDTO = new ProductDTO(
             "Test Product",
             450.0,
             "http://newimagelink.com",
             1
         );
+
+        Product existingProduct = new Product(existingProductDTO);
         // Given
         given(productRepository.findByName("Test Product")).willReturn(Optional.of(existingProduct));
         // Then
-        assertThatThrownBy(() -> productService.addProduct(newProduct))
+        assertThatThrownBy(() -> productService.addProduct(newProductDTO))
             .isInstanceOf(BadRequestException.class)
             .hasMessageContaining("Invalid Request.");
         
-        verify(productRepository).findByName(existingProduct.getName());
+        verify(productRepository).findByName(existingProductDTO.getName());
     }
 
     @Test
-    void addProductException() {
+    void addProductWhenInvalidData() {
         // Given
-        Product product = new Product(
+        ProductDTO productDTO = new ProductDTO(
             "TestProduct",
             -1.99,
             "http://imagelink.com",
@@ -130,7 +139,7 @@ public class ProductServiceTest {
         );
         
         // Then
-        assertThatThrownBy(() -> productService.addProduct(product))
+        assertThatThrownBy(() -> productService.addProduct(productDTO))
             .isInstanceOf(BadRequestException.class)
             .hasMessageContaining("Invalid Request, Please check price and/or quantity values.");
     }

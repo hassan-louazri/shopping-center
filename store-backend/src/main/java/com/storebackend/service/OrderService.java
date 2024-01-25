@@ -31,15 +31,14 @@ public class OrderService {
         products.forEach((product, quantity) -> {
             Product isAvailable = productRepository.findById(product).orElse(null);
             if(isAvailable == null) {
-                throw new BadRequestException(String.format("The product identified with %s cannot be added to order.", product));
+                throw new BadRequestException(String.format("Invalid Request. The product identified with %s cannot be added to order.", product));
             }
         });
-        
-        
-        Order newOrder = new Order(orderDTO.getUser(), products, orderDTO.getSubtotal(), orderDTO.getShippingCost());
-        // Order newOrder = new Order(user, products, orderDTO.getSubtotal(), orderDTO.getShippingCost());
-
-        return orderRepository.save(newOrder);
+        // TODO: check order info is valid before saving
+        if(orderDTO.getShippingCost() < 0 || orderDTO.getSubtotal() < 0) {
+            throw new BadRequestException("Invalid Request. Number can't be negative.");
+        }
+        return orderRepository.save(new Order(orderDTO));
     }
 
     public Order getOrder(String id) {
