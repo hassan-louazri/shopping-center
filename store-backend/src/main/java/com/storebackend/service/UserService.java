@@ -55,17 +55,18 @@ public class UserService {
     }
 
     public void updateUser(String id, UserDTO userDTO) {
-
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             modelMapper.map(userDTO, user);
-            //check user info before updating
-            if(userValidator(userDTO)){
+            // Vérifiez les informations de l'utilisateur avant la mise à jour
+            if (userValidator(userDTO)) {
                 userRepository.save(user);
             } else {
-                return;
+                throw new BadRequestException("Invalid user data provided.");
             }
+        } else {
+            throw new BadRequestException("User not found with id: " + id);
         }
     }
 

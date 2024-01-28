@@ -61,6 +61,12 @@
 			<version>1.18.22</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>3.20.2</version> <!-- Vérifiez la dernière version sur https://assertj.github.io/doc/ -->
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
