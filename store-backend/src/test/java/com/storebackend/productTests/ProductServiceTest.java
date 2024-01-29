@@ -1,5 +1,6 @@
 package com.storebackend.productTests;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -141,19 +142,38 @@ public class ProductServiceTest {
         // Then
         assertThatThrownBy(() -> productService.addProduct(productDTO))
             .isInstanceOf(BadRequestException.class)
-            .hasMessageContaining("Invalid Request, Please check price and/or quantity values.");
+            .hasMessageContaining("Invalid Request. Please check price and/or quantity values.");
     }
 
     @Test
-    void deleteProduct() {
+    void deleteProductSuccess() {
         // Given
         String productId = "123productTestId!!!";
+        given(productRepository.findById(productId)).willReturn(Optional.of(new Product()));
         // When 
-        productService.deleteProduct(productId);
+        Boolean result = productService.deleteProduct(productId);
         // Then
         verify(productRepository).deleteById(productId);
+        assertThat(result).isTrue();
     }
 
+    @Test 
+    void deleteProductWrongId() {
+        assertThatThrownBy(() -> productService.deleteProduct(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Product ID cannot be null or empty");
+    }
+
+    @Test
+    void deleteProductNotFound() {
+        String productId = "456";
+        given(productRepository.findById(productId)).willReturn(Optional.empty());
+
+        // When and Then
+        assertThatThrownBy(() -> productService.deleteProduct(productId))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("Invalid Request. Product to delete not found");
+    }
     @Test
     void updateProductWhenValidData() {
         // Given

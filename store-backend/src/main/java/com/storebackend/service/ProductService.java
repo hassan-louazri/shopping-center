@@ -1,6 +1,7 @@
 package com.storebackend.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class ProductService {
     }
 
     public Product getProduct(String id) {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("Product ID cannot be null or empty");
+        }
         return productRepository.findById(id).orElse(null);
     }
 
@@ -40,18 +44,31 @@ public class ProductService {
         }
         // check product info before saving
         if(productDTO.getPrice() <= 0 || productDTO.getQuantity() <= 0) {
-            throw new BadRequestException("Invalid Request, Please check price and/or quantity values.");
+            throw new BadRequestException("Invalid Request. Please check price and/or quantity values.");
         }
         Product newProduct = new Product(productDTO);
         return productRepository.save(newProduct);
     }
 
-    public void deleteProduct(String id) {
+    public Boolean deleteProduct(String id) {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("Product ID cannot be null or empty");
+        }
+        
+        Optional<Product> exists = productRepository.findById(id);
+        if(exists.isEmpty()){
+            throw new BadRequestException("Invalid Request. Product to delete not found");
+        }
+
         productRepository.deleteById(id);
+        return true;
     }
 
-    public void updateProduct(String id, ProductDTO product) {
+    public Boolean updateProduct(String id, ProductDTO product) {
         // check product info
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("Product ID cannot be null or empty");
+        }
         if(product.getPrice() <= 0 || product.getQuantity() <= 0) {
             throw new BadRequestException("Invalid Request. Please check price and/or quantity values.");
         }
@@ -61,6 +78,7 @@ public class ProductService {
         if(productToUpdate != null) {
             modelMapper.map(product, productToUpdate);
             productRepository.save(productToUpdate);
+            return true;
         } else {
             throw new BadRequestException("Invalid Request. Product not found.");
         }

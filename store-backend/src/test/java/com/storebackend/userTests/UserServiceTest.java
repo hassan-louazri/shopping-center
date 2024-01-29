@@ -7,11 +7,11 @@ import com.storebackend.models.UserDTO;
 import com.storebackend.repository.OrderRepository;
 import com.storebackend.repository.UserRepository;
 import com.storebackend.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
     @Mock
@@ -31,10 +32,10 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
+    // @BeforeEach
+    // void setUp() {
+    //     MockitoAnnotations.initMocks(this);
+    // }
 
     @Test
     void createUserWhenInvalidData() {
