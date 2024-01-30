@@ -117,9 +117,9 @@ public class ProductControllerTest {
         given(productService.addProduct(ArgumentMatchers.any())).willThrow(new BadRequestException("Invalid Request. Please Check DTO."));
         // When
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.post(apiUrl)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(asJsonString(invalidProductDTO))
-        );
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(asJsonString(invalidProductDTO)));
+                                    
         // Then
         response.andExpect(status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().string("Invalid Request. Please Check DTO."));

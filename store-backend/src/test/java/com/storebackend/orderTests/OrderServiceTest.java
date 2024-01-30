@@ -134,7 +134,6 @@ public class OrderServiceTest {
             999.0,
             -50.0
         );
-        given(productRepository.findById("ProductId")).willReturn(Optional.of(new Product()));
 
         // Then
         assertThatThrownBy(() -> orderService.newOrder(orderDTO))

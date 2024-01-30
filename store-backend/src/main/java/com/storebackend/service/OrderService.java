@@ -24,8 +24,20 @@ public class OrderService {
         this.productRepository = productRepository;
     }
 
-    public Order newOrder(OrderDTO orderDTO) {
-      
+    public Order getOrder(String id) {
+        Order order = orderRepository.findById(id).orElse(null);
+        if(order == null) {
+            throw new BadRequestException("Invalid Request. Product not found.");
+        }
+        return order;
+    }
+
+    public Order newOrder(OrderDTO orderDTO) { 
+        // check order info is valid before saving
+        if(orderDTO.getShippingCost() < 0 || orderDTO.getSubtotal() < 0) {
+            throw new BadRequestException("Invalid Request. Number can't be negative.");
+        }
+        
         // check if all products are available
         HashMap<String, Integer> products = orderDTO.getProducts();
         products.forEach((product, quantity) -> {
@@ -34,18 +46,7 @@ public class OrderService {
                 throw new BadRequestException(String.format("Invalid Request. The product identified with %s cannot be added to order.", product));
             }
         });
-        // TODO: check order info is valid before saving
-        if(orderDTO.getShippingCost() < 0 || orderDTO.getSubtotal() < 0) {
-            throw new BadRequestException("Invalid Request. Number can't be negative.");
-        }
         return orderRepository.save(new Order(orderDTO));
     }
 
-    public Order getOrder(String id) {
-        Order order = orderRepository.findById(id).orElse(null);
-        if(order == null) {
-            throw new BadRequestException("Invalid Request. Product not found.");
-        }
-        return order;
-    }
 }
