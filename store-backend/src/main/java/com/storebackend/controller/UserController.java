@@ -2,9 +2,11 @@ package com.storebackend.controller;
 
 import com.storebackend.entities.Order;
 import com.storebackend.entities.User;
+import com.storebackend.exceptions.BadRequestException;
 import com.storebackend.models.UserDTO;
 import com.storebackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,10 +25,15 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody UserDTO userDTO) {
-        // TODO: return response based on userService response
-        User newUser = userService.createUser(userDTO);
-        return ResponseEntity.ok(newUser);
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
+        try {
+            User newUser = userService.createUser(userDTO);
+            return ResponseEntity.ok(newUser);
+        } catch (BadRequestException e) {
+            return ResponseEntity.badRequest().body("Server response: " + e);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occured.");
+        }
     }
 
     @GetMapping("/{id}")
@@ -42,22 +49,31 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateUser(@PathVariable String id, @RequestBody UserDTO userDTO) {
-        //TODO: return response based on userService response
-        
-        userService.updateUser(id, userDTO);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UserDTO userDTO) {
+        try {
+            userService.updateUser(id, userDTO);
+            return ResponseEntity.noContent().build();    
+        } catch (BadRequestException e) {
+            return ResponseEntity.badRequest().body("Invalid Request: " + e);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Illegal Argument: " + e);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteUser(@PathVariable String id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid Request. User ID cannot be null or empty.");
+        } catch (BadRequestException e) {
+            return ResponseEntity.badRequest().body("Invalid Request. User to delete is not found.");
+        }
     }
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 }

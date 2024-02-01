@@ -9,6 +9,7 @@ import com.storebackend.repository.UserRepository;
 import com.storebackend.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,7 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -73,9 +76,9 @@ class UserServiceTest {
         String userId = "nonExistentId";
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        Optional<User> user = userService.getUserById(userId);
-
-        assertFalse(user.isPresent());
+        assertThatThrownBy(() -> userService.getUserById(userId))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessageContaining("Invalid Request.");
     }
 
     @Test
@@ -97,7 +100,7 @@ class UserServiceTest {
 
         // Act & Assert
         BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.updateUser(userId, userDTO));
-        assertEquals("User not found with id: " + userId, exception.getMessage());
+        assertEquals("Invalid Request. User with id: " + userId + " not found.", exception.getMessage());
     }
 
     @Test
@@ -110,7 +113,7 @@ class UserServiceTest {
 
         // Act & Assert
         BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.updateUser(userId, userDTO));
-        assertEquals("User not found with id: " + userId, exception.getMessage());
+        assertEquals("Invalid Request. User with id: " + userId + " not found.", exception.getMessage());
     }
 
 
@@ -126,11 +129,35 @@ class UserServiceTest {
     }
 
     @Test
-    void deleteUser() {
-        String userId = "someId";
-        doNothing().when(userRepository).deleteById(userId);
+    void deleteUserSuccess() {
+        // Given
+        given(userRepository.findById(ArgumentMatchers.anyString())).willReturn(Optional.of(new User()));
+        // When
+        boolean result = userService.deleteUser("randomId123!");
+        // Then
+        assertTrue(result);
+        verify(userRepository, times(1)).deleteById("randomId123!");
+    }
 
-        assertDoesNotThrow(() -> userService.deleteUser(userId));
+    @Test
+    void deleteUserNotFound() {
+        // Given
+        String userId = "randomId124!!";
+        given(userRepository.findById(userId)).willReturn(Optional.empty());
+        // Then
+        assertThatThrownBy(() -> userService.deleteUser(userId))
+                    .isInstanceOf(BadRequestException.class)
+                    .hasMessageContaining("Invalid Request.");
+    }
+
+    @Test
+    void deleteUserIllegalArgument() {
+        // Given
+        String illegalId = null;
+        // Then
+        assertThatThrownBy(() -> userService.deleteUser(illegalId))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("User ID cannot be null or empty.");
     }
 
     @Test

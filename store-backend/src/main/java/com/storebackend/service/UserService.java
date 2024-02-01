@@ -47,7 +47,9 @@ public class UserService {
     }
 
     public Optional<User> getUserById(String id) {
-        return userRepository.findById(id);
+        Optional<User> found = userRepository.findById(id); 
+        if(found.isPresent()) return found;
+        else throw new BadRequestException("Invalid Request. User not found.");
     }
 
     public List<User> getAllUsers() {
@@ -55,6 +57,10 @@ public class UserService {
     }
 
     public void updateUser(String id, UserDTO userDTO) {
+        // check id is valid
+        if(id == null || id.isEmpty()) throw new IllegalArgumentException("User ID cannot be null or empty.");
+
+        // check user is valid and present
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -63,19 +69,25 @@ public class UserService {
             if (userValidator(userDTO)) {
                 userRepository.save(user);
             } else {
-                throw new BadRequestException("Invalid user data provided.");
+                throw new BadRequestException("Invalid Request. User data provided is wrong.");
             }
         } else {
-            throw new BadRequestException("User not found with id: " + id);
+            throw new BadRequestException("Invalid Request. User with id: " + id + " not found.");
         }
     }
 
-    public void deleteUser(String id) {
+    public Boolean deleteUser(String id) {
+        if(id == null || id.isEmpty()) throw new IllegalArgumentException("User ID cannot be null or empty.");
+        Optional<User> exists = userRepository.findById(id);
+        if(exists.isEmpty()) throw new BadRequestException("Invalid Request. User to delete not found.");
+        
         userRepository.deleteById(id);
+        return true;
     }
 
     public List<Order> getUserOrders(String userId) {
-        
+        if(userId == null || userId.isEmpty()) throw new IllegalArgumentException("User ID cannot be null or empty.");
+
         List<Order> allOrders = orderRepository.findAll();
         List<Order> userOrders = new ArrayList<Order>();
 
