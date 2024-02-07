@@ -15,10 +15,8 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,20 +28,19 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-@Profile("normal")
-public class SecurityConfig {
+@Profile("test")
+public class TestSecurityConfig {
     private RsakeysConfig rsakeysConfig;
     private PasswordEncoder passwordEncoder;
-
-    public SecurityConfig(RsakeysConfig rsakeysConfig, PasswordEncoder passwordEncoder) {
+    public TestSecurityConfig(RsakeysConfig rsakeysConfig, PasswordEncoder passwordEncoder) {
         this.rsakeysConfig = rsakeysConfig;
         this.passwordEncoder = passwordEncoder;
-    }
 
-    //@Bean
+    }
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
@@ -54,7 +51,6 @@ public class SecurityConfig {
         authProvider.setUserDetailsService(userDetailsService);
         return new ProviderManager(authProvider);
     }
-
     @Bean
     public UserDetailsService inMemoryUserDetailsManager(){
         return new InMemoryUserDetailsManager(
@@ -64,20 +60,12 @@ public class SecurityConfig {
         );
     }
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
                 .csrf(csrf->csrf.disable())
-                .authorizeRequests(auth->auth.requestMatchers("/token/**").permitAll())
-                .authorizeRequests(auth->auth.anyRequest().authenticated())
-                .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer((oauth2) -> oauth2
-                        .jwt(Customizer.withDefaults()))
-                .httpBasic(Customizer.withDefaults())
+                .authorizeRequests(auth->auth.requestMatchers("/**").permitAll())
+                .httpBasic(withDefaults())
                 .build();
-    }
-    @Bean
-    JwtDecoder jwtDecoder(){
-        return NimbusJwtDecoder.withPublicKey(rsakeysConfig.publicKey()).build();
     }
     @Bean
     JwtEncoder jwtEncoder(){
@@ -85,5 +73,7 @@ public class SecurityConfig {
         JWKSource<SecurityContext> jwkSource= new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwkSource);
     }
+
+
 
 }

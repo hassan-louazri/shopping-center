@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -46,6 +47,7 @@ public class ProductControllerTest {
     private final String apiUrl = "/api/v1/products";
 
     @Test
+    @WithMockUser
     void getProducts() throws Exception {
         List<Product> products = Arrays.asList(
             new Product("testProduct1", 999.0, "http://imagelink.com", 50),
@@ -67,6 +69,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getProductFound() throws Exception {
         // Given
         String productId = "productId123!!!";
@@ -81,6 +84,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getProductNotFound() throws Exception {
         // Given
         given(productService.getProduct("1")).willReturn(null);
@@ -94,6 +98,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser
     void createProductValidData() throws Exception {
         ProductDTO productDTO = new ProductDTO("testProduct", 99.0, "http//imagelink.com", 50);
         Product newProduct = new Product(productDTO);
@@ -110,7 +115,8 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$.price").value(newProduct.getPrice()));
     }
 
-    @Test 
+    @Test
+    @WithMockUser
     void createProductInvalidData() throws Exception {
         ProductDTO invalidProductDTO = new ProductDTO("null", -100.0, "null", 50);
         // Given
@@ -126,6 +132,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser
     void createProductUnexpectedError() throws Exception {
         ProductDTO productDTO = new ProductDTO("null", 100.0, "null", 50);
         // Given
@@ -141,6 +148,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser
     void updateProductValidData() throws Exception {
         String idToUpdate = "testProductId123!!!";
         ProductDTO productDTO = new ProductDTO("null", 100.0, "null", 50);
@@ -155,6 +163,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser
     void updateProductInvalidData() throws Exception {
         String idToUpdate = "testProductId123!!!";
         ProductDTO invalidProductDTO = new ProductDTO("", 100.0, "null", 50);
@@ -172,6 +181,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser
     void updateProductNotFound() throws Exception{
         ProductDTO invalidProductDTO = new ProductDTO("", 100.0, "null", 50);
         // Given
@@ -187,6 +197,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser
     void updateProductUnexpectedError() throws Exception {
         // Given
         String productId = "123";
@@ -205,6 +216,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser
     void deleteProductExists() throws Exception{
         // Given
         String productId = "123";
@@ -220,6 +232,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser
     void deleteProductInvalidId() throws Exception{
         // Given
         String nonValidProductId = "";
@@ -236,6 +249,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser
     void deleteProductNonExistant() throws Exception{
         String nonExistingProductId = "noProductid126";
         // Given
