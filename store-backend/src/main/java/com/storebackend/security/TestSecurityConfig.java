@@ -21,10 +21,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -34,46 +31,23 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @Profile("test")
 public class TestSecurityConfig {
-    private RsakeysConfig rsakeysConfig;
-    private PasswordEncoder passwordEncoder;
-    public TestSecurityConfig(RsakeysConfig rsakeysConfig, PasswordEncoder passwordEncoder) {
-        this.rsakeysConfig = rsakeysConfig;
-        this.passwordEncoder = passwordEncoder;
 
-    }
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
     @Bean
-    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService){
-        var authProvider = new DaoAuthenticationProvider();
-        authProvider.setPasswordEncoder(passwordEncoder);
-        authProvider.setUserDetailsService(userDetailsService);
-        return new ProviderManager(authProvider);
-    }
-    @Bean
-    public UserDetailsService inMemoryUserDetailsManager(){
-        return new InMemoryUserDetailsManager(
-                User.withUsername("hassan").password(passwordEncoder.encode("1234")).authorities("USER").build(),
-                User.withUsername("mohamed").password(passwordEncoder.encode("1234")).authorities("USER").build(),
-                User.withUsername("anas").password(passwordEncoder.encode("1234")).authorities("USER","ADMIN").build()
-        );
-    }
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(csrf->csrf.disable())
-                .authorizeRequests(auth->auth.requestMatchers("/**").permitAll())
-                .httpBasic(withDefaults())
-                .build();
-    }
-    @Bean
-    JwtEncoder jwtEncoder(){
-        JWK jwk= new RSAKey.Builder(rsakeysConfig.publicKey()).privateKey(rsakeysConfig.privateKey()).build();
-        JWKSource<SecurityContext> jwkSource= new ImmutableJWKSet<>(new JWKSet(jwk));
-        return new NimbusJwtEncoder(jwkSource);
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().permitAll() // Autoriser toutes les requêtes sans authentification
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(Customizer.withDefaults())
+                );
+        return http.build();
     }
 
 
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        return token -> Jwt.withTokenValue(token).build(); // Crée un jeton JWT factice
+    }
 
 }
