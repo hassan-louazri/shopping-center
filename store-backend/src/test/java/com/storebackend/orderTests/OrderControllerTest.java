@@ -10,7 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,7 +26,8 @@ import com.storebackend.exceptions.BadRequestException;
 import com.storebackend.models.OrderDTO;
 import com.storebackend.service.OrderService;
 
-@WebMvcTest(OrderController.class)
+@SpringBootTest
+@AutoConfigureMockMvc // Cette annotation configure automatiquement MockMvc pour vous
 @ExtendWith(MockitoExtension.class)
 public class OrderControllerTest {
     

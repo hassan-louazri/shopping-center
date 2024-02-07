@@ -33,7 +33,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@Profile("normal")
+@Profile("dev")
 public class SecurityConfig {
     private RsakeysConfig rsakeysConfig;
     private PasswordEncoder passwordEncoder;

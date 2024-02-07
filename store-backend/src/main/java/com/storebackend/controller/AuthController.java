@@ -1,5 +1,6 @@
 package com.storebackend.controller;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@Profile("dev")
 public class AuthController {
     private JwtEncoder jwtEncoder;
 
