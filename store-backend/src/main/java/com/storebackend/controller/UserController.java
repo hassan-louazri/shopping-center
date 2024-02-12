@@ -31,7 +31,7 @@ public class UserController {
             User newUser = userService.createUser(userDTO);
             return ResponseEntity.ok(newUser);
         } catch (BadRequestException e) {
-            return ResponseEntity.badRequest().body("Server response: " + e);
+            return ResponseEntity.badRequest().body("Invalid Request: Cannot create new User.");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occured.");
         }

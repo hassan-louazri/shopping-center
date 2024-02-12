@@ -9,7 +9,7 @@ import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 
 
-public class GenerateKayPair {
+public class GenerateKeyPair {
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
         KeyPairGenerator keyPairGenerator=KeyPairGenerator.getInstance("RSA");
         var keyPair=keyPairGenerator.generateKeyPair();

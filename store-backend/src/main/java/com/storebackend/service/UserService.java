@@ -59,18 +59,15 @@ public class UserService {
     public void updateUser(String id, UserDTO userDTO) {
         // check id is valid
         if(id == null || id.isEmpty()) throw new IllegalArgumentException("User ID cannot be null or empty.");
+        // Vérifiez les informations de l'utilisateur avant la mise à jour
+        if(!userValidator(userDTO)) throw new BadRequestException("Invalid request. Incorrect information was provided.");
 
         // check user is valid and present
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             modelMapper.map(userDTO, user);
-            // Vérifiez les informations de l'utilisateur avant la mise à jour
-            if (userValidator(userDTO)) {
-                userRepository.save(user);
-            } else {
-                throw new BadRequestException("Invalid Request. User data provided is wrong.");
-            }
+            userRepository.save(user);
         } else {
             throw new BadRequestException("Invalid Request. User with id: " + id + " not found.");
         }

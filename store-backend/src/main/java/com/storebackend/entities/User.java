@@ -2,6 +2,8 @@ package com.storebackend.entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.storebackend.models.UserDTO;
+
 @Document(collection = "users")
 public class User {
     @Id
@@ -24,6 +26,15 @@ public class User {
         this.phone = phone;
         this.country = country;
         this.address = address;
+    }
+
+    public User(UserDTO userDTO) {
+        this.name = userDTO.getName();
+        this.password = userDTO.getPassword();
+        this.mail = userDTO.getMail();
+        this.phone = userDTO.getPhone();
+        this.country = userDTO.getCountry();
+        this.address = userDTO.getAddress();
     }
 
     // Getters and Setters

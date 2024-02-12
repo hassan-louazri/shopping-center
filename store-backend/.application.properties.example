@@ -1,1 +1,3 @@
 spring.data.mongodb.uri=
+rsa.public-key=
+rsa.private-key=
